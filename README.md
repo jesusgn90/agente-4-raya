@@ -4,9 +4,9 @@ Práctica realizada para la asignatura de Inteligencia Artificial del Grado en I
 Agente inteligente para jugar al 4 en raya, el paquete incluye interfaz gráfica, listo para jugar contra la máquina u otra gente.
 
 Para ejecutarlo:
-`make`
-`./4raya`
+* `make`
+* `./4raya`
 
 Para limpiar el directorio:
-`make clean`
+* `make clean`
 

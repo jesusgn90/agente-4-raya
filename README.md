@@ -5,6 +5,7 @@ Agente inteligente para jugar al 4 en raya, el paquete incluye interfaz gráfica
 
 Algoritmo usado:
 * Minimax con poda Alfa-Beta (http://es.wikipedia.org/wiki/Poda_alfa-beta)
+* Lenguaje C++
 
 Para ejecutarlo:
 * `make`

@@ -1,16 +1,21 @@
-# agente-4-raya
-Práctica realizada para la asignatura de Inteligencia Artificial del Grado en Ingeniería Informática de la UGR.
+# Connect Four
 
-Agente inteligente para jugar al 4 en raya, el paquete incluye interfaz gráfica, listo para jugar contra la máquina u otra gente.
+Simple game to play with your friend or with the CPU. 
 
-Algoritmo usado:
-* Minimax con poda Alfa-Beta (http://es.wikipedia.org/wiki/Poda_alfa-beta)
-* Lenguaje C++
+## Description
 
-Para ejecutarlo:
-* `make`
-* `./4raya`
+Graphic package to play _connect four_. It's implemented using C/C++ and the _minimax alpha beta pruning_ algorithm.
 
-Para limpiar el directorio:
-* `make clean`
+## Usage
+
+Play
+
+    $ git clone https://github.com/jesusgn90/agente-4-raya
+    $ cd agente-4-raya
+    $ make
+    $ ./4raya
+
+Clean
+
+    $ make clean
 

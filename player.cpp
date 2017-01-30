@@ -11,64 +11,25 @@
 using namespace std;
 
 const double masinf=9999999999.0, menosinf=-9999999999.0;
-//Contador del total de estados evaluados
+
 int estadosEvaluados = 0;
-// Constructor
-Player::Player(int jug)
-{
+
+Player::Player(int jug){
     jugador_=jug;
 }
 
 // Actualiza el estado del juego para el jugador
-void Player::Perceive(const Environment & env)
-{
+void Player::Perceive(const Environment & env){
     actual_=env;
 }
 
-/*
-double Puntuacion(int jugador, const Environment &estado)
-{
-    double suma=0;
-    for (int i=0; i<7; i++)
-        for (int j=0; j<7; j++)
-        {
-            if (estado.See_Casilla(i,j)==jugador)
-            {
-                if (j<3)
-                    suma += j;
-                else
-                    suma += (6-j);
-            }
-        }
-    return suma;
-}
-
-Funcion de valoracion para testear Poda Alfabeta
-double ValoracionTest(const Environment &estado, int jugador)
-{
-    int ganador = estado.RevisarTablero();
-    if (ganador==jugador)
-        return 99999999.0; // Gana el jugador que pide la valoracion
-    else if (ganador!=0)
-        return -99999999.0; // Pierde el jugador que pide la valoracion
-    else if (estado.Get_Casillas_Libres()==0)
-        return 0;  // Hay un empate global y se ha rellenado completamente el tablero
-    else
-        return Puntuacion(jugador,estado);
-}
-*/
-
 //FUNCIONES AUXILIARES(HEURISTICA)
-double tengoEnFila(Environment estado,int jugador)
-{
+double tengoEnFila(Environment estado,int jugador){
     int jugadorAux;
     double resultado=0;
-    for(int i=0; i<7; ++i){
-        for(int j=0; j<7; ++j){
-            //Comprobamos que se este mirando una casilla del jugador
-            // para ahorrarnos el resto de ifs en caso contrario.
+    for(unsigned int i=0; i<7; ++i){
+        for(unsigned int j=0; j<7; ++j){
             if(estado.See_Casilla(i,j)==jugador){
-//--------------Combinaciones de dos-----------------------------------------//
                 //Horizontal de dos
                 if(j<6 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i,j+1) == jugador)
                     resultado += 10;
@@ -100,29 +61,22 @@ double tengoEnFila(Environment estado,int jugador)
                 if((i>2 && j>2) && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i-1,j-1) == jugador)
                     resultado += 20;
 
-//--------------Combinaciones de tres------------------------------------------//
                 //Horizontal de tres
                 if(j<5 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i,j+1) == jugador && estado.See_Casilla(i,j+2) == jugador)
                     resultado += 50;
                 //Horizontal de tres preferente
-                if(j>0 && j<4 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i,j+1) == jugador && estado.See_Casilla(i,j+2) == jugador)
-                {
+                if(j>0 && j<4 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i,j+1) == jugador && estado.See_Casilla(i,j+2) == jugador){
                     resultado += 50;
-                    //Horizontal de tres preferente con hueco en ambos extremos
-                    if(estado.See_Casilla(i,j+3)==0 && estado.See_Casilla(i,j-1)==0)
-                        resultado += 500;
+                    if(estado.See_Casilla(i,j+3)==0 && estado.See_Casilla(i,j-1)==0) resultado += 500;
                 }
 
-                //Vertical de tres
+
                 if(i>1 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i-1,j) == jugador && estado.See_Casilla(i-2,j) == jugador)
                     resultado += 30;
-                //Vertical de tres preferente
-                if(i>1 && i<6 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i-1,j) == jugador && estado.See_Casilla(i-2,j) == jugador)
-                {
+
+                if(i>1 && i<6 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i-1,j) == jugador && estado.See_Casilla(i-2,j) == jugador)                {
                     resultado += 30;
-                    //Vertical de tres preferente con hueco arriba
-                    if(estado.See_Casilla(i+1,j)==0)
-                        resultado+=30;
+                    if(estado.See_Casilla(i+1,j)==0) resultado+=30;
                 }
                 //Vertical de tres central
                 if(i>1 && j==3 && estado.See_Casilla(i,j) == jugador && estado.See_Casilla(i-1,j) == jugador && estado.See_Casilla(i-2,j) == jugador)
@@ -152,7 +106,6 @@ double tengoEnFila(Environment estado,int jugador)
                         resultado += 500;
                 }
 
-//--------------Otras comprobaciones------------------------------------------//
                 //Damos prioridad a las columnas centrales o en los laterales
                 if(j==3)
                     resultado+=5;
@@ -165,17 +118,15 @@ double tengoEnFila(Environment estado,int jugador)
 }
 
 
-double Valoracion(const Environment &estado, int jugador)
-{
+double Valoracion(const Environment &estado, int jugador){
     int ganador = estado.RevisarTablero();
     if (ganador==jugador)
-        return 99999999.0; // Gana el jugador que pide la valoracion
+        return 99999999.0; 
     else if (ganador!=0)
-        return -99999999.0; // Pierde el jugador que pide la valoracion
+        return -99999999.0; 
     else if (estado.Get_Casillas_Libres()==0)
-        return 0;  // Hay un empate global y se ha rellenado completamente el tablero
-    else{
-        //Si no he ganado ni perdido ni empatado aplicamos la heurística
+        return 0;  
+    else {
         double total=0;
         total += tengoEnFila(estado,jugador);
         return total;
@@ -184,14 +135,10 @@ double Valoracion(const Environment &estado, int jugador)
 
 
 
-void JuegoAleatorio(bool aplicables[], int opciones[], int &j)
-{
-
+void JuegoAleatorio(bool aplicables[], int opciones[], int &j){
     j=0;
-    for (int i=0; i<7; i++)
-    {
-        if (aplicables[i])
-        {
+    for (unsigned int i=0; i<7; ++i){
+        if (aplicables[i]){
             opciones[j]=i;
             j++;
         }
@@ -199,8 +146,7 @@ void JuegoAleatorio(bool aplicables[], int opciones[], int &j)
 }
 
 //ALGORITMO MINIMAX CON PODA ALFA_BETA
-double Player::minimax(const Environment &env,int jugador, int depth,double a,double b,bool maxormin)
-{
+double Player::minimax(const Environment &env,int jugador, int depth,double a,double b,bool maxormin){
     if(env.JuegoTerminado() || depth==0){
         estadosEvaluados++;
         return Valoracion(env,jugador);
@@ -228,8 +174,7 @@ double Player::minimax(const Environment &env,int jugador, int depth,double a,do
 }
 
 // Invoca el siguiente movimiento del jugador
-Environment::ActionType Player::Think()
-{
+Environment::ActionType Player::Think(){
     const int PROFUNDIDAD_ALFABETA = 8; // Umbral maximo de profundidad para la poda Alfa_Beta
     Environment::ActionType accion; // acción que se va a devolver
     bool aplicables[7]; // Vector bool usado para obtener las acciones que son aplicables en el estado actual. La interpretacion es
@@ -237,10 +182,11 @@ Environment::ActionType Player::Think()
     double alpha, beta; // Cotas de la poda AlfaBeta
     int n_act; //Acciones posibles en el estado actual
     n_act = actual_.possible_actions(aplicables); // Obtengo las acciones aplicables al estado actual en "aplicables"
-//  int opciones[10];
 
     cout << " Acciones aplicables ";
+
     (jugador_==1) ? cout << "Jugador verde" : cout << "Jugador azul";
+
     for (unsigned int t=0; t<7; ++t)
         if (aplicables[t])
             cout << " " << actual_.ActionStr( static_cast< Environment::ActionType > (t)  );
@@ -270,7 +216,7 @@ Environment::ActionType Player::Think()
         Environment tablero = actual_.GenerateNextMove(act);
         accion = static_cast< Environment::ActionType > (tablero.Last_Action(jugador_));
     }
-    cout << "Tiempo empleado para decidir:" << sec2-sec1 << " segundos"<< endl << endl;
+    cout << "Tiempo empleado para decidir:" << sec2 - sec1 << " segundos"<< endl << endl;
     return accion;
 }
 
